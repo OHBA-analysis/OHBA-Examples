@@ -12,50 +12,20 @@ from dask.distributed import Client
 from osl import source_recon, utils
 
 # Elekta
-do_oxford = False
-do_cambridge = False
+do_oxford = True
+do_cambridge = True
 
 # CTF
-do_nottingham = False
+do_nottingham = True
 do_cardiff = True
 
-raw_dir = "/well/woolrich/projects/mrc_meguk/raw"
+raw_dir = "/well/woolrich/projects/mrc_meguk/public"
 preproc_dir = "/well/woolrich/projects/mrc_meguk/all_sites/preproc"
 smri_dir = "/well/woolrich/projects/mrc_meguk/all_sites/smri"
 coreg_dir = "/well/woolrich/projects/mrc_meguk/all_sites/coreg"
 
-def fix_headshape_points(src_dir, subject, *args, **kwargs):
-    filenames = source_recon.rhino.get_coreg_filenames(src_dir, subject)
 
-    # Load saved headshape and nasion files
-    hs = np.loadtxt(filenames["polhemus_headshape_file"])
-    nas = np.loadtxt(filenames["polhemus_nasion_file"])
-    lpa = np.loadtxt(filenames["polhemus_lpa_file"])
-    rpa = np.loadtxt(filenames["polhemus_rpa_file"])
-
-    # Remove headshape points on the nose
-    remove = np.logical_and(hs[1] > max(lpa[1], rpa[1]), hs[2] < nas[2])
-    hs = hs[:, ~remove]
-
-    # Remove headshape points on the neck
-    remove = hs[2] < min(lpa[2], rpa[2]) - 4
-    hs = hs[:, ~remove]
-
-    # Remove headshape points far from the head in any direction
-    remove = np.logical_or(
-        hs[0] < lpa[0] - 5,
-        np.logical_or(
-            hs[0] > rpa[0] + 5,
-            hs[1] > nas[1] + 5,
-        ),
-    )
-    hs = hs[:, ~remove]
-
-    # Overwrite headshape file
-    utils.logger.log_or_print(f"overwritting {filenames['polhemus_headshape_file']}")
-    np.savetxt(filenames["polhemus_headshape_file"], hs)
-
-def extract_polhemus_from_pos(src_dir, subject, *args, **kwargs):
+def extract_polhemus_from_pos(src_dir, subject, preproc_file, smri_file, epoch_file):
     """Saves fiducials/headshape from a pos file."""
 
     # Get coreg filenames
@@ -100,7 +70,7 @@ def extract_polhemus_from_pos(src_dir, subject, *args, **kwargs):
     np.savetxt(filenames["polhemus_lpa_file"], polhemus_lpa)
     np.savetxt(filenames["polhemus_headshape_file"], polhemus_headshape)
 
-def extract_polhemus_from_elc(src_dir, subject, *args, **kwargs):
+def extract_polhemus_from_elc(src_dir, subject, preproc_file, smri_file, epoch_file):
     """Saves fiducials/headshape from an elc file."""
 
     # Get coreg filenames
@@ -151,7 +121,7 @@ if __name__ == "__main__":
         config = """
             source_recon:
             - extract_fiducials_from_fif: {}
-            - fix_headshape_points: {}
+            - remove_stray_headshape_points: {}
             - compute_surfaces:
                 include_nose: False
             - coregister:
@@ -175,7 +145,6 @@ if __name__ == "__main__":
             subjects=subjects,
             preproc_files=preproc_files,
             smri_files=smri_files,
-            extra_funcs=[fix_headshape_points],
             dask_client=True,
         )
 
@@ -183,7 +152,7 @@ if __name__ == "__main__":
         config = """
             source_recon:
             - extract_fiducials_from_fif: {}
-            - fix_headshape_points: {}
+            - remove_stray_headshape_points: {}
             - compute_surfaces:
                 include_nose: False
             - coregister:
@@ -207,7 +176,6 @@ if __name__ == "__main__":
             subjects=subjects,
             preproc_files=preproc_files,
             smri_files=smri_files,
-            extra_funcs=[fix_headshape_points],
             dask_client=True,
         )
 
@@ -215,7 +183,6 @@ if __name__ == "__main__":
         config = """
             source_recon:
             - extract_polhemus_from_pos: {}
-            - fix_headshape_points: {}
             - compute_surfaces:
                 include_nose: False
             - coregister:
@@ -239,7 +206,7 @@ if __name__ == "__main__":
             subjects=subjects,
             preproc_files=preproc_files,
             smri_files=smri_files,
-            extra_funcs=[fix_headshape_points, extract_polhemus_from_pos],
+            extra_funcs=[extract_polhemus_from_pos],
             dask_client=True,
         )
 
@@ -270,6 +237,6 @@ if __name__ == "__main__":
             subjects=subjects,
             preproc_files=preproc_files,
             smri_files=smri_files,
-            extra_funcs=[fix_headshape_points, extract_polhemus_from_elc],
+            extra_funcs=[extract_polhemus_from_elc],
             dask_client=True,
         )

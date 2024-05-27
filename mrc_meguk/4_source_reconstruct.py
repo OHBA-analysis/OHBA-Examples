@@ -11,8 +11,8 @@ from dask.distributed import Client
 from osl import source_recon, utils
 
 # Elekta
-do_oxford = False
-do_cambridge = False
+do_oxford = True
+do_cambridge = True
 
 # CTF
 do_nottingham = True
@@ -21,6 +21,14 @@ do_cardiff = True
 if __name__ == "__main__":
     utils.logger.set_up(level="INFO")
     client = Client(n_workers=16, threads_per_worker=1)
+
+    # Copy coregistration directory
+    coreg_dir = "/well/woolrich/projects/mrc_meguk/all_sites/coreg"
+    src_dir = "/well/woolrich/projects/mrc_meguk/all_sites/src"
+    if os.path.exists(src_dir):
+        print(f"Please delete: {src_dir}")
+        exit()
+    source_recon.rhino.utils.system_call(f"cp -r {coreg_dir} {src_dir}", verbose=True)
 
     if do_oxford:
         config = """

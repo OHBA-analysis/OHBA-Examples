@@ -4,36 +4,30 @@
 
 # Authors: Chetan Gohil <chetan.gohil@psych.ox.ac.uk>
 
-import os
 from glob import glob
 from dask.distributed import Client
 
-from osl import utils
-from osl.source_recon import find_template_subject, run_src_batch
-
-def run(cmd):
-    print(cmd)
-    os.system(cmd)
+from osl import source_recon, utils
 
 src_dir = "/well/woolrich/projects/mrc_meguk/all_sites/src"
 sflip_dir = "/well/woolrich/projects/mrc_meguk/all_sites/sflip"
 
-# Copy the parc-raw.fif files into one big directory
-for path in sorted(glob(f"{src_dir}/*/*/parc/parc-raw.fif")):
-    subject = path.split("/")[-3]
-    run(f"mkdir -p {sflip_dir}/{subject}/parc")
-    run(f"cp {path} {sflip_dir}/{subject}/parc")
-
 if __name__ == "__main__":
     utils.logger.set_up(level="INFO")
     client = Client(n_workers=16, threads_per_worker=1)
+
+    # Copy the parc-raw.fif files into one big directory
+    for path in sorted(glob(f"{src_dir}/*/*/parc/parc-raw.fif")):
+        subject = path.split("/")[-3]
+        source_recon.rhino.utils.system_call(f"mkdir -p {sflip_dir}/{subject}/parc", verbose=True)
+        source_recon.rhino.utils.system_call(f"cp {path} {sflip_dir}/{subject}/parc", verbose=True)
 
     subjects = []
     for path in sorted(glob(f"{sflip_dir}/*/parc/parc-raw.fif")):
         subject = path.split("/")[-3]
         subjects.append(subject)
 
-    template = find_template_subject(
+    template = source_recon.find_template_subject(
         sflip_dir, subjects, n_embeddings=15, standardize=True
     )
 
@@ -48,7 +42,7 @@ if __name__ == "__main__":
             max_flips: 20
     """
 
-    run_src_batch(
+    source_recon.run_src_batch(
         config,
         src_dir=sflip_dir,
         subjects=subjects,

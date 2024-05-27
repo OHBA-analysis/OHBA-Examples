@@ -1,4 +1,5 @@
 """Fix sform code of structurals.
+
 """
 
 # Authors: Chetan Gohil <chetan.gohil@psych.ox.ac.uk>
@@ -10,11 +11,11 @@ from glob import glob
 
 from osl import source_recon
 
-do_oxford = False
-do_nottingham = False
+do_oxford = True
+do_nottingham = True
 do_cardiff = True
 
-raw_dir = "/well/woolrich/projects/mrc_meguk/raw"
+raw_dir = "/well/woolrich/projects/mrc_meguk/public"
 
 def fix_smri(filename):
     smri = nib.load(filename)
@@ -23,12 +24,7 @@ def fix_smri(filename):
     sform_std[0, 0:4] = [-1, 0, 0, 128]
     sform_std[1, 0:4] = [0, 1, 0, -128]
     sform_std[2, 0:4] = [0, 0, 1, -90]
-    source_recon.rhino.utils.system_call(
-        "fslorient -setsform {} {}".format(
-            " ".join(map(str, sform_std.flatten())),
-            filename,
-        )
-    )
+    source_recon.rhino.utils.system_call("fslorient -setsform {} {}".format(" ".join(map(str, sform_std.flatten())), filename))
 
 if do_oxford:
     smri_dir = "/well/woolrich/projects/mrc_meguk/all_sites/smri/Oxford"

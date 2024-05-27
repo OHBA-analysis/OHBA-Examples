@@ -9,13 +9,13 @@ import mne
 import numpy as np
 from glob import glob
 
-save_src = False
-save_prepared_all = False
-save_prepared_rest_all = False
-save_prepared_rest_eo = False
-save_prepared_rest_ec = False
-save_prepared_task_all = False
-save_prepared_task_auditory = False
+save_src = True
+save_prepared_all = True
+save_prepared_rest_all = True
+save_prepared_rest_eo = True
+save_prepared_rest_ec = True
+save_prepared_task_all = True
+save_prepared_task_auditory = True
 save_prepared_task_nback = True
 save_prepared_task_scenes = True
 save_prepared_task_sternberg = True
@@ -29,9 +29,7 @@ os.makedirs(fid_dir, exist_ok=True)
 if save_src:
     os.makedirs(f"{npy_dir}/src", exist_ok=True)
 
-    files = sorted(
-        glob("/well/woolrich/projects/mrc_meguk/all_sites/sflip/*/sflip_parc-raw.fif")
-    )
+    files = sorted(glob("/well/woolrich/projects/mrc_meguk/all_sites/sflip/*/sflip_parc-raw.fif"))
     for file in files:
         id = file.split("/")[-2]
 
@@ -56,12 +54,10 @@ if save_prepared_all:
             file.write(f"{filename.split('/')[-1]}\n")
 
     data = Data(files, load_memmaps=False, n_jobs=16)
-    data.prepare(
-        {
-            "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
-            "standardize": {},
-        }
-    )
+    data.prepare({
+        "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
+        "standardize": {},
+    })
     data.save(f"{npy_dir}/prepared_all")
     data.delete_dir()
 
@@ -77,12 +73,10 @@ if save_prepared_rest_all:
             file.write(f"{filename.split('/')[-1]}\n")
 
     data = Data(files, load_memmaps=False, n_jobs=16)
-    data.prepare(
-        {
-            "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
-            "standardize": {},
-        }
-    )
+    data.prepare({
+        "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
+        "standardize": {},
+    })
     data.save(f"{npy_dir}/prepared_rest_all")
     data.delete_dir()
 
@@ -96,12 +90,10 @@ if save_prepared_rest_eo:
             file.write(f"{filename.split('/')[-1]}\n")
 
     data = Data(files, load_memmaps=False, n_jobs=16)
-    data.prepare(
-        {
-            "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
-            "standardize": {},
-        }
-    )
+    data.prepare({
+        "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
+        "standardize": {},
+    })
     data.save(f"{npy_dir}/prepared_rest_eo")
     data.delete_dir()
 
@@ -115,12 +107,10 @@ if save_prepared_rest_ec:
             file.write(f"{filename.split('/')[-1]}\n")
 
     data = Data(files, load_memmaps=False, n_jobs=16)
-    data.prepare(
-        {
-            "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
-            "standardize": {},
-        }
-    )
+    data.prepare({
+        "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
+        "standardize": {},
+    })
     data.save(f"{npy_dir}/prepared_rest_ec")
     data.delete_dir()
 
@@ -128,9 +118,7 @@ if save_prepared_task_all:
     from osl_dynamics.data import Data
 
     files = []
-    for task in [
-        "auditory", "nback", "scenes", "sternberg", "verbgeneration", "visuomotor"
-    ]:
+    for task in ["auditory", "nback", "scenes", "sternberg", "verbgeneration", "visuomotor"]:
         files += sorted(glob(f"{npy_dir}/src/*_task-{task}*.npy"))
 
     with open(f"{fid_dir}/prepared_task_all.txt", "w") as file:
@@ -138,12 +126,10 @@ if save_prepared_task_all:
             file.write(f"{filename.split('/')[-1]}\n")
 
     data = Data(files, load_memmaps=False, n_jobs=16)
-    data.prepare(
-        {
-            "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
-            "standardize": {},
-        }
-    )
+    data.prepare({
+        "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
+        "standardize": {},
+    })
     data.save(f"{npy_dir}/prepared_task_all")
     data.delete_dir()
 
@@ -157,12 +143,10 @@ if save_prepared_task_auditory:
             file.write(f"{filename.split('/')[-1]}\n")
 
     data = Data(files, load_memmaps=False, n_jobs=16)
-    data.prepare(
-        {
-            "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
-            "standardize": {},
-        }
-    )
+    data.prepare({
+        "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
+        "standardize": {},
+    })
     data.save(f"{npy_dir}/prepared_task_auditory")
     data.delete_dir()
 
@@ -176,12 +160,10 @@ if save_prepared_task_nback:
             file.write(f"{filename.split('/')[-1]}\n")
 
     data = Data(files, load_memmaps=False, n_jobs=16)
-    data.prepare(
-        {
-            "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
-            "standardize": {},
-        }
-    )
+    data.prepare({
+        "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
+        "standardize": {},
+    })
     data.save(f"{npy_dir}/prepared_task_nback")
     data.delete_dir()
 
@@ -195,12 +177,10 @@ if save_prepared_task_scenes:
             file.write(f"{filename.split('/')[-1]}\n")
 
     data = Data(files, load_memmaps=False, n_jobs=16)
-    data.prepare(
-        {
-            "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
-            "standardize": {},
-        }
-    )
+    data.prepare({
+        "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
+        "standardize": {},
+    })
     data.save(f"{npy_dir}/prepared_task_scenes")
     data.delete_dir()
 
@@ -214,12 +194,10 @@ if save_prepared_task_sternberg:
             file.write(f"{filename.split('/')[-1]}\n")
 
     data = Data(files, load_memmaps=False, n_jobs=16)
-    data.prepare(
-        {
-            "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
-            "standardize": {},
-        }
-    )
+    data.prepare({
+        "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
+        "standardize": {},
+    })
     data.save(f"{npy_dir}/prepared_task_sternberg")
     data.delete_dir()
 
@@ -233,12 +211,10 @@ if save_prepared_task_verbgeneration:
             file.write(f"{filename.split('/')[-1]}\n")
 
     data = Data(files, load_memmaps=False, n_jobs=16)
-    data.prepare(
-        {
-            "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
-            "standardize": {},
-        }
-    )
+    data.prepare({
+        "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
+        "standardize": {},
+    })
     data.save(f"{npy_dir}/prepared_task_verbgeneration")
     data.delete_dir()
 
@@ -252,11 +228,9 @@ if save_prepared_task_visuomotor:
             file.write(f"{filename.split('/')[-1]}\n")
 
     data = Data(files, load_memmaps=False, n_jobs=16)
-    data.prepare(
-        {
-            "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
-            "standardize": {},
-        }
-    )
+    data.prepare({
+        "tde_pca": {"n_embeddings": 15, "n_pca_components": 120},
+        "standardize": {},
+    })
     data.save(f"{npy_dir}/prepared_task_visuomotor")
     data.delete_dir()

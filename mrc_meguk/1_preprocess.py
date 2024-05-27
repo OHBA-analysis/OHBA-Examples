@@ -10,17 +10,17 @@ from dask.distributed import Client
 from osl import preprocessing, utils
 
 # Elekta
-do_oxford = False
-do_cambridge = False
+do_oxford = True
+do_cambridge = True
 
 # CTF
-do_nottingham = False
+do_nottingham = True
 do_cardiff = True
 
 # ??
 do_glasgow = False
 
-raw_dir = "/well/woolrich/projects/mrc_meguk/raw"
+raw_dir = "/well/woolrich/projects/mrc_meguk/public"
 preproc_dir = "/well/woolwich/projects/mrc_meguk/all_sites/preproc"
 
 if __name__ == "__main__":
