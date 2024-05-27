@@ -1,6 +1,8 @@
 # OHBA-Examples
 
-This repository contains example scripts for analysing MEG data.
+This repository contains example scripts for analysing various public M/EEG datasets.
+
+Generic examples for different scanners can be found here: https://github.com/OHBA-analysis/osl/tree/main/examples.
 
 ## Installation
 
